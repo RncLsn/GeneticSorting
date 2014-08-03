@@ -13,8 +13,15 @@ public class Length implements Terminal {
     }
 
     @Override
-    public int evaluate (List<Integer> list) {
+    public void init () { }
+
+    @Override
+    public int evaluate (List<Integer> list, int index) {
         return list.size();
     }
 
+    @Override
+    public String toString() {
+        return "(length)";
+    }
 }

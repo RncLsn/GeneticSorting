@@ -7,31 +7,21 @@ import java.util.List;
  */
 public class Index implements Terminal {
 
-    private int value;
-
-    public Index () {
-        this.value = 0;
-    }
-
     @Override
     public List<TreeNode> getChildren () {
         return null;
     }
 
     @Override
-    public int evaluate (List<Integer> list) {
-        return value;
+    public void init () { }
+
+    @Override
+    public int evaluate (List<Integer> list, int index) {
+        return index;
     }
 
-    public int increment() {
-        return value++;
-    }
-
-    public void initialize(int value) {
-        this.value = value;
-    }
-
-    public int getValue() {
-        return value;
+    @Override
+    public String toString() {
+        return "(index)";
     }
 }

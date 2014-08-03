@@ -6,6 +6,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
 
 /**
@@ -14,6 +15,12 @@ import java.util.Random;
 public class Test {
 
     public static void main (String[] args) {
+//        test1();
+        test2();
+
+    }
+
+    public static void test1() {
         try(BufferedReader reader =
                     Files.newBufferedReader(
                             Paths.get("Resources/SortingTree.txt"), Charset.defaultCharset())) {
@@ -24,7 +31,7 @@ public class Test {
             }
 
             String encodedTree = stringBuilder.toString();
-            EvolvingSorting evolvingSorting = new EvolvingSorting(encodedTree);
+            EvolvingSorting evolvingSorting = EvolvingSorting.generateFromEncoding(encodedTree);
 
             ArrayList<Integer> list = new ArrayList<>();
             Random rand = new Random();
@@ -33,13 +40,25 @@ public class Test {
             }
             System.out.println(list);
 
+            evolvingSorting.init();
             evolvingSorting.trySorting(list);
             System.out.println(list);
+            System.out.println(evolvingSorting);
         }
-        catch (IOException e) {
+        catch (IOException | InvalidExpressionException e) {
             e.printStackTrace();
-        } catch (InvalidExpressionException e) {
-            e.printStackTrace();
+        }
+    }
+
+    public static void test2() {
+        HashSet<EvolvingSorting> population = new HashSet<>();
+        RandomFunctionFactory functionFactory = new RandomFunctionFactory();
+        RandomTerminalFactory terminalFactory = new RandomTerminalFactory();
+        for (int i = 0; i < 20; i++) {
+            population.add(EvolvingSorting.generateFull(functionFactory, terminalFactory, 3));
+        }
+        for (EvolvingSorting sorting: population) {
+            System.out.println(sorting);
         }
     }
 }

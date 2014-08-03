@@ -10,20 +10,20 @@ public class Iterate implements Function {
 
     private static final int ITERATIONS_PER_CALL = 200;
     private static final int ITERATIONS_PER_TEST = 2000;
+    private static final int NUM_ARGS            = 3;
 
     private int iterationsPerTest = 0;
 
-    private final Expression x;
-    private final Expression y;
-    private final Expression z;
-    private final Index      index;
+    private Expression x;
+    private Expression y;
+    private Expression z;
 
-    public Iterate (Expression x, Expression y, Expression z, Index index) {
+    public Iterate () {}
+
+    public Iterate (Expression x, Expression y, Expression z) {
         this.x = x;
         this.y = y;
         this.z = z;
-
-        this.index = index;
     }
 
     @Override
@@ -32,20 +32,43 @@ public class Iterate implements Function {
     }
 
     @Override
-    public int evaluate (List<Integer> list) {
+    public void init () {
+        iterationsPerTest = 0;
+    }
 
-        int start = x.evaluate(list);
-        int end = y.evaluate(list);
+    @Override
+    public int evaluate (List<Integer> list, int index) {
 
-        index.initialize(start);
+        int start = x.evaluate(list, index);
+        int end = y.evaluate(list, index);
+
         for (int i = 0;
-             index.getValue() < end && index.getValue() < list.size() &&
-             i < ITERATIONS_PER_CALL &&
-             iterationsPerTest < ITERATIONS_PER_TEST;
-             index.increment(), i++, iterationsPerTest++) {
-            z.evaluate(list);
+             i < end && i < list.size() &&
+             i < ITERATIONS_PER_CALL && iterationsPerTest < ITERATIONS_PER_TEST;
+             i++, iterationsPerTest++) {
+            z.evaluate(list, i);
         }
 
         return Math.min(end, list.size());
+    }
+
+    @Override
+    public int numOfArgs () {
+        return NUM_ARGS;
+    }
+
+    @Override
+    public void setArgs (List<Expression> args)
+            throws AlreadyInitializedException, WrongNumberOfArgsException {
+        if(x != null || y != null) throw new AlreadyInitializedException();
+        if(args.size() != NUM_ARGS) throw new WrongNumberOfArgsException(args.size(), NUM_ARGS);
+        x = args.get(0);
+        y = args.get(1);
+        z = args.get(2);
+    }
+
+    @Override
+    public String toString () {
+        return "(iterate " + x + " " + y + " " + z + ")";
     }
 }

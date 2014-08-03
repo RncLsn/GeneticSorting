@@ -7,5 +7,7 @@ import java.util.List;
  */
 public interface Expression extends TreeNode {
 
-    int evaluate (List<Integer> list);
+    void init();
+    int evaluate (List<Integer> list, int index);
+
 }

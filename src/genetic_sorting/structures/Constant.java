@@ -7,19 +7,29 @@ import java.util.List;
  */
 public class Constant implements Terminal {
 
-    private final int value;
+    // todo
+
+    private int value;
 
     public Constant (int value) {
         this.value = value;
     }
 
     @Override
-    public int evaluate (List<Integer> list) {
+    public void init () { }
+
+    @Override
+    public int evaluate (List<Integer> list, int index) {
         return value;
     }
 
     @Override
     public List<? extends TreeNode> getChildren () {
         return null;
+    }
+
+    @Override
+    public String toString () {
+        return "(" + value + ")";
     }
 }
