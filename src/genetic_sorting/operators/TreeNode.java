@@ -1,4 +1,4 @@
-package genetic_sorting.structures;
+package genetic_sorting.operators;
 
 import java.util.List;
 

@@ -10,23 +10,13 @@ import java.util.regex.Pattern;
  */
 public class EvolvingSorting {
 
-    private static final int MAX_DEPTH     = 6;
-    public static final  int INITIAL_INDEX = 0;
+    public static final  int     INITIAL_INDEX      = 0;
+    private static final int     MAX_DEPTH          = 6;
+    private static final Pattern EXPRESSION_START_P = Pattern.compile("\\s*\\(\\s*(?<id>\\w+)");
+    private static final Pattern EXPRESSION_END_P   = Pattern.compile("\\s*\\)");
     private Expression rootExpression;
 
     private EvolvingSorting (Expression rootExpression) { this.rootExpression = rootExpression; }
-
-    public Expression getRootExpression () {
-        return this.rootExpression;
-    }
-
-    public void trySorting (List<Integer> list) {
-        rootExpression.evaluate(list, INITIAL_INDEX);
-    }
-
-    public void init () {
-        rootExpression.init();
-    }
 
     public static EvolvingSorting generateFull (RandomFunctionFactory functionFactory,
                                                 RandomTerminalFactory terminalFactory) {
@@ -42,13 +32,13 @@ public class EvolvingSorting {
 
     public static EvolvingSorting generateFromEncoding (String encodedTree)
             throws InvalidExpressionException {
-        return new EvolvingSorting(parse(encodedTree, 0, new Index()).expression);
+        return new EvolvingSorting(parseExpression(encodedTree));
     }
 
-    private static Expression generateRandomExpression (int depth,
-                                                        int maxDepth,
-                                                        RandomFunctionFactory functionFactory,
-                                                        RandomTerminalFactory terminalFactory) {
+    public static Expression generateRandomExpression (int depth,
+                                                       int maxDepth,
+                                                       RandomFunctionFactory functionFactory,
+                                                       RandomTerminalFactory terminalFactory) {
         if (depth == maxDepth - 1) {
             return terminalFactory.makeTerminal();
         }
@@ -67,15 +57,12 @@ public class EvolvingSorting {
         return function;
     }
 
-    @Override
-    public String toString () {
-        return rootExpression.toString();
+    public static Expression parseExpression (String encodedTree)
+            throws InvalidExpressionException {
+        return auxParse(encodedTree, 0, new Index()).expression;
     }
 
-    private static final Pattern EXPRESSION_START_P = Pattern.compile("\\s*\\(\\s*(?<id>\\w+)");
-    private static final Pattern EXPRESSION_END_P   = Pattern.compile("\\s*\\)");
-
-    private static ParserPair parse (String encodedTree, int start, Index index)
+    private static ParserPair auxParse (String encodedTree, int start, Index index)
             throws InvalidExpressionException {
 
         Matcher matcher = EXPRESSION_START_P.matcher(encodedTree);
@@ -91,46 +78,46 @@ public class EvolvingSorting {
             } else {
                 switch (matcher.group("id").toLowerCase()) {
                     case "decrement":
-                        parserPair1 = parse(encodedTree, matcher.end(), index);
+                        parserPair1 = auxParse(encodedTree, matcher.end(), index);
                         end = parserPair1.index;
                         expression = new Decrement(parserPair1.expression);
                         break;
                     case "increment":
-                        parserPair1 = parse(encodedTree, matcher.end(), index);
+                        parserPair1 = auxParse(encodedTree, matcher.end(), index);
                         end = parserPair1.index;
                         expression = new Increment(parserPair1.expression);
                         break;
                     case "getbigger":
-                        parserPair1 = parse(encodedTree, matcher.end(), index);
-                        parserPair2 = parse(encodedTree, parserPair1.index, index);
+                        parserPair1 = auxParse(encodedTree, matcher.end(), index);
+                        parserPair2 = auxParse(encodedTree, parserPair1.index, index);
                         end = parserPair2.index;
                         expression = new GetBigger(parserPair1.expression, parserPair2.expression);
                         break;
                     case "getsmaller":
-                        parserPair1 = parse(encodedTree, matcher.end(), index);
-                        parserPair2 = parse(encodedTree, parserPair1.index, index);
+                        parserPair1 = auxParse(encodedTree, matcher.end(), index);
+                        parserPair2 = auxParse(encodedTree, parserPair1.index, index);
                         end = parserPair2.index;
                         expression = new GetSmaller(parserPair1.expression, parserPair2.expression);
                         break;
                     case "iterate":
                         Index newIndex = new Index();
-                        parserPair1 = parse(encodedTree, matcher.end(), newIndex);
-                        parserPair2 = parse(encodedTree, parserPair1.index, newIndex);
-                        parserPair3 = parse(encodedTree, parserPair2.index, newIndex);
+                        parserPair1 = auxParse(encodedTree, matcher.end(), newIndex);
+                        parserPair2 = auxParse(encodedTree, parserPair1.index, newIndex);
+                        parserPair3 = auxParse(encodedTree, parserPair2.index, newIndex);
                         end = parserPair3.index;
                         expression = new Iterate(parserPair1.expression,
                                                  parserPair2.expression,
                                                  parserPair3.expression);
                         break;
                     case "subtract":
-                        parserPair1 = parse(encodedTree, matcher.end(), index);
-                        parserPair2 = parse(encodedTree, parserPair1.index, index);
+                        parserPair1 = auxParse(encodedTree, matcher.end(), index);
+                        parserPair2 = auxParse(encodedTree, parserPair1.index, index);
                         end = parserPair2.index;
                         expression = new Subtract(parserPair1.expression, parserPair2.expression);
                         break;
                     case "swap":
-                        parserPair1 = parse(encodedTree, matcher.end(), index);
-                        parserPair2 = parse(encodedTree, parserPair1.index, index);
+                        parserPair1 = auxParse(encodedTree, matcher.end(), index);
+                        parserPair2 = auxParse(encodedTree, parserPair1.index, index);
                         end = parserPair2.index;
                         expression = new Swap(parserPair1.expression, parserPair2.expression);
                         break;
@@ -158,6 +145,27 @@ public class EvolvingSorting {
         } else {
             throw new InvalidExpressionException("The expression is not legal for the grammar");
         }
+    }
+
+    public Expression getRootExpression () {
+        return this.rootExpression;
+    }
+
+    public void setRootExpression (Expression rootExpression) {
+        this.rootExpression = rootExpression;
+    }
+
+    public void trySorting (List<Integer> list) {
+        rootExpression.evaluate(list, INITIAL_INDEX);
+    }
+
+    public void init () {
+        rootExpression.init();
+    }
+
+    @Override
+    public String toString () {
+        return rootExpression.toString();
     }
 
     private static class ParserPair {

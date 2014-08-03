@@ -1,5 +1,7 @@
 package genetic_sorting.structures;
 
+import genetic_sorting.operators.TreeNode;
+
 import java.util.List;
 
 /**

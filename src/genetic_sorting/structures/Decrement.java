@@ -1,5 +1,7 @@
 package genetic_sorting.structures;
 
+import genetic_sorting.operators.TreeNode;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,7 +14,7 @@ public class Decrement implements Function {
 
     private Expression x;
 
-    public Decrement() {}
+    public Decrement () {}
 
     public Decrement (Expression x) {
         this.x = x;
@@ -34,8 +36,12 @@ public class Decrement implements Function {
     @Override
     public void setArgs (List<Expression> args)
             throws AlreadyInitializedException, WrongNumberOfArgsException {
-        if(x != null) throw new AlreadyInitializedException();
-        if(args.size() != NUM_ARGS) throw new WrongNumberOfArgsException(args.size(), NUM_ARGS);
+        if (x != null) {
+            throw new AlreadyInitializedException();
+        }
+        if (args.size() != NUM_ARGS) {
+            throw new WrongNumberOfArgsException(args.size(), NUM_ARGS);
+        }
         x = args.get(0);
     }
 

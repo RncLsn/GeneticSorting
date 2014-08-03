@@ -1,5 +1,8 @@
 package genetic_sorting.structures;
 
+
+import genetic_sorting.operators.TreeNode;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -60,8 +63,12 @@ public class Iterate implements Function {
     @Override
     public void setArgs (List<Expression> args)
             throws AlreadyInitializedException, WrongNumberOfArgsException {
-        if(x != null || y != null) throw new AlreadyInitializedException();
-        if(args.size() != NUM_ARGS) throw new WrongNumberOfArgsException(args.size(), NUM_ARGS);
+        if (x != null || y != null) {
+            throw new AlreadyInitializedException();
+        }
+        if (args.size() != NUM_ARGS) {
+            throw new WrongNumberOfArgsException(args.size(), NUM_ARGS);
+        }
         x = args.get(0);
         y = args.get(1);
         z = args.get(2);

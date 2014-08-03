@@ -1,5 +1,7 @@
 package genetic_sorting.structures;
 
+import genetic_sorting.operators.TreeNode;
+
 import java.util.List;
 
 /**
@@ -7,7 +9,6 @@ import java.util.List;
  */
 public interface Expression extends TreeNode {
 
-    void init();
+    void init ();
     int evaluate (List<Integer> list, int index);
-
 }

@@ -1,5 +1,7 @@
 package genetic_sorting.structures;
 
+import genetic_sorting.operators.TreeNode;
+
 import java.util.List;
 
 /**
@@ -21,7 +23,7 @@ public class Index implements Terminal {
     }
 
     @Override
-    public String toString() {
+    public String toString () {
         return "(index)";
     }
 }
