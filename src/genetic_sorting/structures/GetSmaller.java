@@ -23,7 +23,10 @@ public class GetSmaller extends Function {
     }
 
     @Override
-    public void init () { }
+    public void init () {
+        x.init();
+        y.init();
+    }
 
     @Override
     public int evaluate (List<Integer> list, int index) {

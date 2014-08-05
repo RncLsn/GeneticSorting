@@ -27,7 +27,7 @@ public class EvolvingSorting implements Cloneable {
                                                 RandomTerminalFactory terminalFactory,
                                                 int maxDepth) {
         return new EvolvingSorting(
-                generateRandomExpression(0, maxDepth, functionFactory, terminalFactory));
+                generateRandomExpression(maxDepth, functionFactory, terminalFactory));
     }
 
     public static EvolvingSorting generateFromEncoding (String encodedTree)
@@ -35,17 +35,24 @@ public class EvolvingSorting implements Cloneable {
         return new EvolvingSorting(parseExpression(encodedTree));
     }
 
-    public static Expression generateRandomExpression (int depth,
-                                                       int maxDepth,
+    public static Expression generateRandomExpression (int maxDepth,
                                                        RandomFunctionFactory functionFactory,
                                                        RandomTerminalFactory terminalFactory) {
+        return auxGenerateRandomExpression(0, maxDepth, functionFactory, terminalFactory);
+    }
+
+
+    private static Expression auxGenerateRandomExpression (int depth,
+                                                           int maxDepth,
+                                                           RandomFunctionFactory functionFactory,
+                                                           RandomTerminalFactory terminalFactory) {
         if (depth == maxDepth - 1) {
             return terminalFactory.makeTerminal();
         }
         Function function = functionFactory.makeFunction();
         List<Expression> args = new ArrayList<>();
         for (int i = 0; i < function.numOfArgs(); i++) {
-            args.add(generateRandomExpression(depth + 1, maxDepth, functionFactory,
+            args.add(auxGenerateRandomExpression(depth + 1, maxDepth, functionFactory,
                                               terminalFactory));
         }
         try {
@@ -156,11 +163,26 @@ public class EvolvingSorting implements Cloneable {
     }
 
     public void trySorting (List<Integer> list) {
+        rootExpression.init();
         rootExpression.evaluate(list, INITIAL_INDEX);
     }
 
     public void init () {
         rootExpression.init();
+    }
+
+    @Override
+    public int hashCode () {
+        return getClass().hashCode() + rootExpression.hashCode();
+    }
+
+    @Override
+    public boolean equals (Object obj) {
+        if (!obj.getClass().equals(getClass())) {
+            return false;
+        }
+        EvolvingSorting that = (EvolvingSorting) obj;
+        return this.rootExpression.equals(that.rootExpression);
     }
 
     @Override

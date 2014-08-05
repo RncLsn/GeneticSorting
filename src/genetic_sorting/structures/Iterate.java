@@ -32,6 +32,9 @@ public class Iterate extends Function {
     @Override
     public void init () {
         iterationsPerTest = 0;
+        x.init();
+        y.init();
+        z.init();
     }
 
     @Override
@@ -105,4 +108,5 @@ public class Iterate extends Function {
     public String toString () {
         return "(iterate " + x + " " + y + " " + z + ")";
     }
+
 }

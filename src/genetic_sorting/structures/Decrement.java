@@ -21,7 +21,9 @@ public class Decrement extends Function {
     }
 
     @Override
-    public void init () { }
+    public void init () {
+        x.init();
+    }
 
     @Override
     public int evaluate (List<Integer> list, int index) {
@@ -73,4 +75,5 @@ public class Decrement extends Function {
     public String toString () {
         return "(decrement " + x + ")";
     }
+
 }

@@ -23,7 +23,10 @@ public class GetBigger extends Function {
     }
 
     @Override
-    public void init () { }
+    public void init () {
+        x.init();
+        y.init();
+    }
 
     @Override
     public int evaluate (List<Integer> list, int index) {
@@ -90,4 +93,5 @@ public class GetBigger extends Function {
     public String toString () {
         return "(getbigger " + x + " " + y + ")";
     }
+
 }

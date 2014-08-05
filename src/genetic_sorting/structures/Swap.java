@@ -23,7 +23,10 @@ public class Swap extends Function {
     }
 
     @Override
-    public void init () { }
+    public void init () {
+        x.init();
+        y.init();
+    }
 
     @Override
     public int evaluate (List<Integer> list, int index) {
@@ -94,4 +97,5 @@ public class Swap extends Function {
     public String toString () {
         return "(swap " + x + " " + y + ")";
     }
+
 }

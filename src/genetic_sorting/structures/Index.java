@@ -42,4 +42,5 @@ public class Index extends Terminal {
     public String toString () {
         return "(index)";
     }
+
 }

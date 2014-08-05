@@ -13,14 +13,17 @@ public class Increment extends Function {
     private static final int NUM_ARGS = 1;
     private Expression x;
 
-    public Increment () {}
+    public Increment () {
+    }
 
     public Increment (Expression x) {
         this.x = x;
     }
 
     @Override
-    public void init () { }
+    public void init () {
+        x.init();
+    }
 
     @Override
     public int evaluate (List<Integer> list, int index) {
@@ -33,13 +36,13 @@ public class Increment extends Function {
     }
 
     @Override
-    public List<? extends TreeNode<Expression>> getChildren () {
-        return Arrays.asList(x);
+    public Expression getElement () {
+        return this;
     }
 
     @Override
-    public Expression getElement () {
-        return this;
+    public List<? extends TreeNode<Expression>> getChildren () {
+        return Arrays.asList(x);
     }
 
     @Override
@@ -72,4 +75,5 @@ public class Increment extends Function {
     public String toString () {
         return "(increment " + x + ")";
     }
+
 }

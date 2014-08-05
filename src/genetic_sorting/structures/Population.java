@@ -2,6 +2,9 @@ package genetic_sorting.structures;
 
 import genetic_sorting.evaluation.Evaluation;
 import genetic_sorting.operators.RandomOperatorsFactory;
+import genetic_sorting.util.Balance;
+import genetic_sorting.util.MyArrays;
+import genetic_sorting.util.MyCollections;
 
 import java.util.*;
 
@@ -33,32 +36,30 @@ public class Population {
     }
 
     public EvolvingSorting fitnessProportionalSelection (Evaluation evaluation) {
-        double totalFitness = 0;
-        for (EvolvingSorting sorting : individuals) {
-            totalFitness += evaluation.fitness(sorting);
-        }
-
-        Random rand = new Random();
-        while (true) {
-            for (EvolvingSorting individual : individuals) {
-                double p = evaluation.fitness(individual) / totalFitness;
-                if (rand.nextDouble() < p) {
-                    return individual;
-                }
-            }
-        }
+        return MyCollections.weightedRandomSelection(individuals,
+                                                     new EvolvingSortingBalance(evaluation));
     }
 
     public EvolvingSorting randomSelection () {
         Random rand = new Random();
-        while (true) {
-            for (EvolvingSorting individual : individuals) {
-                double p = 1.0 / individuals.size();
-                if (rand.nextDouble() < p) {
-                    return individual;
-                }
+//        while (true) {
+//            for (EvolvingSorting individual : individuals) {
+//                double p = 1.0 / individuals.size();
+//                if (rand.nextDouble() < p) {
+//                    return individual;
+//                }
+//            }
+//        }
+        int position = rand.nextInt(individuals.size());
+        for (EvolvingSorting individual : individuals) {
+            if (position == 0) {
+                return individual;
             }
+            position--;
         }
+
+        // it never happens
+        return null;
     }
 
     public Set<EvolvingSorting> getCorrectIndividuals (Evaluation evaluation) {
@@ -83,5 +84,29 @@ public class Population {
 
     public int size () {
         return individuals.size();
+    }
+
+    public List<Collection<EvolvingSorting>> randomPartition (List<Double> probabilities) {
+        ArrayList<Collection<EvolvingSorting>> populationList = new ArrayList<>();
+        for (int i = 0; i < probabilities.size(); i++) {
+            populationList.add(new ArrayList<EvolvingSorting>());
+        }
+
+        for (EvolvingSorting individual : individuals) {
+            int randomIndex =
+                    MyArrays.indexWeightedRandomSelection(probabilities, new DoubleBalance());
+            populationList.get(randomIndex).add(individual);
+
+        }
+
+        return populationList;
+    }
+
+    private static class DoubleBalance implements Balance<Double> {
+
+        @Override
+        public double weigh (Double aDouble) {
+            return aDouble;
+        }
     }
 }

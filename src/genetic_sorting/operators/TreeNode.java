@@ -1,8 +1,9 @@
 package genetic_sorting.operators;
 
+import genetic_sorting.util.MyCollections;
+
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 import java.util.Stack;
 
 /**
@@ -13,16 +14,18 @@ public abstract class TreeNode<T> implements Iterable<TreeNode<T>> {
     public abstract T getElement ();
 
     public TreeNode<T> randomSubtree () {
-        double p = 1.0 / size();
+//        double p = 1.0 / size();
+//
+//        Random rand = new Random();
+//        while (true) {
+//            for (TreeNode<T> treeNode : this) {
+//                if (rand.nextDouble() < p) {
+//                    return treeNode;
+//                }
+//            }
+//        }
 
-        Random rand = new Random();
-        while (true) {
-            for (TreeNode<T> treeNode : this) {
-                if (rand.nextDouble() < p) {
-                    return treeNode;
-                }
-            }
-        }
+        return MyCollections.randomSelection(this);
     }
 
     public int height () {
@@ -34,7 +37,7 @@ public abstract class TreeNode<T> implements Iterable<TreeNode<T>> {
         for (TreeNode<T> child : getChildren()) {
             maxDepth = Math.max(maxDepth, child.height());
         }
-        return maxDepth;
+        return maxDepth + 1;
     }
 
     /**
