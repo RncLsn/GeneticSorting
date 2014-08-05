@@ -16,7 +16,7 @@ import java.util.Set;
  */
 public class BatchGP {
 
-    public static final int INITIAL_POPULATION = 2000;
+    public static final int INITIAL_POPULATION = 50;
     public static final int MAX_TREE_DEPTH     = 6;
     public static final int TEST_CASES         = 15;
     public static final int MAX_LIST_LENGTH    = 100;
@@ -43,7 +43,7 @@ public class BatchGP {
                                                MAX_LIST_VALUE);
 
         ReproductionAndCrossoverFactory recFactory = new ReproductionAndCrossoverFactory(
-                evaluation);
+                evaluation, (int) 1.8 * MAX_TREE_DEPTH);
         UniformMutationFactory uniformFactory = new UniformMutationFactory();
 
         System.out.println("EXECUTION");

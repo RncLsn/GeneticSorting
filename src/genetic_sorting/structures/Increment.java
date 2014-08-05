@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * @author Alessandro Ronca
  */
-public class Increment implements Function {
+public class Increment extends Function {
 
     private static final int NUM_ARGS = 1;
     private Expression x;
@@ -28,8 +28,27 @@ public class Increment implements Function {
     }
 
     @Override
-    public List<? extends TreeNode> getChildren () {
+    public Object clone () throws CloneNotSupportedException {
+        return new Increment((Expression) x.clone());
+    }
+
+    @Override
+    public List<? extends TreeNode<Expression>> getChildren () {
         return Arrays.asList(x);
+    }
+
+    @Override
+    public Expression getElement () {
+        return this;
+    }
+
+    @Override
+    public boolean replaceChild (Expression oldChild, Expression newChild) {
+        if (x.equals(oldChild)) {
+            x = newChild;
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -53,5 +72,4 @@ public class Increment implements Function {
     public String toString () {
         return "(increment " + x + ")";
     }
-
 }

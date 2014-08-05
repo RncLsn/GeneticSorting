@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * @author Alessandro Ronca
  */
-public class Swap implements Function {
+public class Swap extends Function {
 
     private static final int NUM_ARGS = 2;
 
@@ -20,11 +20,6 @@ public class Swap implements Function {
     public Swap (Expression x, Expression y) {
         this.x = x;
         this.y = y;
-    }
-
-    @Override
-    public List<? extends TreeNode> getChildren () {
-        return Arrays.asList(x, y);
     }
 
     @Override
@@ -50,6 +45,11 @@ public class Swap implements Function {
     }
 
     @Override
+    public Object clone () throws CloneNotSupportedException {
+        return new Swap((Expression) x.clone(), (Expression) y.clone());
+    }
+
+    @Override
     public int numOfArgs () {
         return NUM_ARGS;
     }
@@ -68,8 +68,30 @@ public class Swap implements Function {
     }
 
     @Override
+    public Expression getElement () {
+        return this;
+    }
+
+    @Override
+    public List<? extends TreeNode<Expression>> getChildren () {
+        return Arrays.asList(x, y);
+    }
+
+    @Override
+    public boolean replaceChild (Expression oldChild, Expression newChild) {
+        if (x.equals(oldChild)) {
+            x = newChild;
+            return true;
+        }
+        if (y.equals(oldChild)) {
+            y = newChild;
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public String toString () {
         return "(swap " + x + " " + y + ")";
     }
-
 }

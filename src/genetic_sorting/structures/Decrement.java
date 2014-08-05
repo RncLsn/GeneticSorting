@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * @author Alessandro Ronca
  */
-public class Decrement implements Function {
+public class Decrement extends Function {
 
     private static final int NUM_ARGS = 1;
 
@@ -29,6 +29,11 @@ public class Decrement implements Function {
     }
 
     @Override
+    public Object clone () throws CloneNotSupportedException {
+        return new Decrement((Expression) x.clone());
+    }
+
+    @Override
     public int numOfArgs () {
         return NUM_ARGS;
     }
@@ -46,8 +51,22 @@ public class Decrement implements Function {
     }
 
     @Override
-    public List<? extends TreeNode> getChildren () {
+    public Expression getElement () {
+        return this;
+    }
+
+    @Override
+    public List<? extends TreeNode<Expression>> getChildren () {
         return Arrays.asList(x);
+    }
+
+    @Override
+    public boolean replaceChild (Expression oldChild, Expression newChild) {
+        if (x.equals(oldChild)) {
+            x = newChild;
+            return true;
+        }
+        return false;
     }
 
     @Override

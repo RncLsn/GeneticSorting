@@ -13,6 +13,7 @@ public class UniformMutation implements Operator {
     @Override
     public Collection<EvolvingSorting> operate (Population population) {
         EvolvingSorting individual = population.randomSelection();
+        // todo
         return null;
     }
 }

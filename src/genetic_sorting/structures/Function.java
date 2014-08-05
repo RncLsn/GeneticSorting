@@ -5,8 +5,9 @@ import java.util.List;
 /**
  * @author Alessandro Ronca
  */
-public interface Function extends Expression {
-    int numOfArgs();
-    void setArgs(List<Expression> args)
+public abstract class Function extends Expression {
+
+    abstract int numOfArgs ();
+    abstract void setArgs (List<Expression> args)
             throws WrongNumberOfArgsException, AlreadyInitializedException;
 }

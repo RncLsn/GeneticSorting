@@ -10,9 +10,11 @@ import java.util.Random;
 public class ReproductionAndCrossoverFactory implements RandomOperatorsFactory {
 
     private final Evaluation evaluation;
+    private final int        maxHeight;
 
-    public ReproductionAndCrossoverFactory (Evaluation evaluation) {
+    public ReproductionAndCrossoverFactory (Evaluation evaluation, int maxHeight) {
         this.evaluation = evaluation;
+        this.maxHeight = maxHeight;
     }
 
     @Override
@@ -23,7 +25,7 @@ public class ReproductionAndCrossoverFactory implements RandomOperatorsFactory {
             case 0:
                 return new Reproduction(evaluation);
             case 1:
-                return new MutualCrossover(evaluation);
+                return new MutualCrossover(evaluation, maxHeight);
             default:
                 return null;
         }

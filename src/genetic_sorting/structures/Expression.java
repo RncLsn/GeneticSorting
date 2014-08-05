@@ -7,8 +7,13 @@ import java.util.List;
 /**
  * @author Alessandro Ronca
  */
-public interface Expression extends TreeNode {
+public abstract class Expression extends TreeNode<Expression> implements Cloneable {
 
-    void init ();
-    int evaluate (List<Integer> list, int index);
+    abstract void init ();
+    abstract int evaluate (List<Integer> list, int index);
+
+    @Override
+    public Object clone () throws CloneNotSupportedException {
+        throw new CloneNotSupportedException();
+    }
 }

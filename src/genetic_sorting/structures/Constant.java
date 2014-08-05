@@ -2,12 +2,13 @@ package genetic_sorting.structures;
 
 import genetic_sorting.operators.TreeNode;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
  * @author Alessandro Ronca
  */
-public class Constant implements Terminal {
+public class Constant extends Terminal {
 
     // todo
 
@@ -26,8 +27,18 @@ public class Constant implements Terminal {
     }
 
     @Override
-    public List<? extends TreeNode> getChildren () {
-        return null;
+    public Expression getElement () {
+        return this;
+    }
+
+    @Override
+    public List<? extends TreeNode<Expression>> getChildren () {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public boolean replaceChild (Expression oldChild, Expression newChild) {
+        return false;
     }
 
     @Override

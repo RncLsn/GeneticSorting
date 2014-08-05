@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 /**
  * @author Alessandro Ronca
  */
-public class EvolvingSorting {
+public class EvolvingSorting implements Cloneable {
 
     public static final  int     INITIAL_INDEX      = 0;
     private static final int     MAX_DEPTH          = 6;
@@ -161,6 +161,11 @@ public class EvolvingSorting {
 
     public void init () {
         rootExpression.init();
+    }
+
+    @Override
+    public Object clone () throws CloneNotSupportedException {
+        return new EvolvingSorting((Expression) rootExpression.clone());
     }
 
     @Override

@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * @author Alessandro Ronca
  */
-public class Iterate implements Function {
+public class Iterate extends Function {
 
     private static final int ITERATIONS_PER_CALL = 200;
     private static final int ITERATIONS_PER_TEST = 2000;
@@ -27,11 +27,6 @@ public class Iterate implements Function {
         this.x = x;
         this.y = y;
         this.z = z;
-    }
-
-    @Override
-    public List<? extends TreeNode> getChildren () {
-        return Arrays.asList(x, y, z);
     }
 
     @Override
@@ -56,6 +51,11 @@ public class Iterate implements Function {
     }
 
     @Override
+    public Object clone () throws CloneNotSupportedException {
+        return new Iterate((Expression) x.clone(), (Expression) y.clone(), (Expression) z.clone());
+    }
+
+    @Override
     public int numOfArgs () {
         return NUM_ARGS;
     }
@@ -72,6 +72,33 @@ public class Iterate implements Function {
         x = args.get(0);
         y = args.get(1);
         z = args.get(2);
+    }
+
+    @Override
+    public Expression getElement () {
+        return this;
+    }
+
+    @Override
+    public List<? extends TreeNode<Expression>> getChildren () {
+        return Arrays.asList(x, y, z);
+    }
+
+    @Override
+    public boolean replaceChild (Expression oldChild, Expression newChild) {
+        if (x.equals(oldChild)) {
+            x = newChild;
+            return true;
+        }
+        if (y.equals(oldChild)) {
+            y = newChild;
+            return true;
+        }
+        if (z.equals(oldChild)) {
+            z = newChild;
+            return true;
+        }
+        return false;
     }
 
     @Override
