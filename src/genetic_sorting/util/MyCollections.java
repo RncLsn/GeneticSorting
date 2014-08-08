@@ -28,7 +28,7 @@ public class MyCollections {
         }
 
         // it never happens
-        return null;
+        throw new RuntimeException("Wrong code");
     }
 
     public static <T extends Weighty> T weightedRandomSelection (Collection<T> collection) {
@@ -50,7 +50,7 @@ public class MyCollections {
         }
 
         // it never happens
-        return null;
+        throw new RuntimeException("Wrong code");
     }
 
     public static <T> T weightedRandomSelection (Collection<T> collection, Balance<T> balance) {
@@ -71,6 +71,6 @@ public class MyCollections {
         }
 
         // it never happens
-        return null;
+        throw new RuntimeException("Wrong code");
     }
 }

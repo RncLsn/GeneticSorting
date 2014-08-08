@@ -25,6 +25,10 @@ public class Evaluation {
 
     public Evaluation (DisorderMeasure disorderMeasure, int numOfTestCases, int maxLength,
                        int maxValue) {
+        if (maxLength < 2) {
+            throw new IllegalArgumentException("maxLength must be >1");
+        }
+
         this.disorderMeasure = disorderMeasure;
         this.numOfTestCases = numOfTestCases;
         this.maxLength = maxLength;
@@ -39,7 +43,7 @@ public class Evaluation {
     private List<Integer> randomList (int maxLength, int maxValue) {
         ArrayList<Integer> list = new ArrayList<>();
         Random rand = new Random();
-        int length = rand.nextInt(maxLength);
+        int length = 2 + rand.nextInt(maxLength - 1);
         for (int i = 0; i < length; i++) {
             list.add(rand.nextInt(maxValue + 1));
         }
@@ -59,7 +63,7 @@ public class Evaluation {
                 ArrayList<Integer> testCaseCopy = new ArrayList<>(testCase);
                 sorting.trySorting(testCaseCopy);
                 double disorder = disorderMeasure.getValue(testCaseCopy);
-                totalFitness += 1 - (1.0 / Math.pow(2, disorder));
+                totalFitness += 1 - disorder;
             }
             memo.put(sorting, totalFitness / testCases.size());
         }
@@ -84,10 +88,22 @@ public class Evaluation {
 
     @Override
     public String toString () {
-        return "Evaluation{" +
-               "maxValue=" + maxValue +
-               ", maxLength=" + maxLength +
-               ", numOfTestCases=" + numOfTestCases +
-               '}';
+        StringBuilder sb = new StringBuilder();
+        sb.append("Evaluation{")
+          .append("maxValue=").append(maxValue)
+          .append(", maxLength=").append(maxLength)
+          .append(", numOfTestCases=").append(numOfTestCases);
+
+        sb.append(", testCases={");
+        for (List<Integer> testCase : testCases) {
+            sb.append(testCase).append(", ");
+        }
+        sb.deleteCharAt(sb.length() - 1);
+        sb.deleteCharAt(sb.length() - 1);
+
+        sb.append("}");
+        sb.append("}");
+
+        return sb.toString();
     }
 }

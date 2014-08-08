@@ -26,8 +26,14 @@ public class UniformMutation implements Operator {
 
         // todo apply to the whole population according to the input percentage
         List<Collection<EvolvingSorting>> partitions =
-                population.randomPartition(
-                        Arrays.asList(affectedPopulationPct, 1 - affectedPopulationPct));
+                null;
+        try {
+            partitions = ((Population) population.clone()).randomPartition(
+                    Arrays.asList(affectedPopulationPct,
+                                  1 - affectedPopulationPct));
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
 
         for (EvolvingSorting individual : partitions.get(0)) {
 

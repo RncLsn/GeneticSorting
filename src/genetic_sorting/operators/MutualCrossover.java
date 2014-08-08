@@ -14,8 +14,12 @@ import java.util.Collection;
 public class MutualCrossover implements Operator {
 
     private final Evaluation evaluation;
-    private final int maxDepth;
+    private final int        maxDepth;
 
+    /**
+     * @param evaluation is used for fitness proportional selection.
+     * @param maxHeight
+     */
     public MutualCrossover (Evaluation evaluation, int maxHeight) {
         this.evaluation = evaluation;
         this.maxDepth = maxHeight;
@@ -28,32 +32,42 @@ public class MutualCrossover implements Operator {
         try {
             firstIndividual
                     = (EvolvingSorting) population.fitnessProportionalSelection(evaluation).clone();
-            secondIndividual = (EvolvingSorting) population.fitnessProportionalSelection(evaluation)
-                                                           .clone();
+            secondIndividual =
+                    (EvolvingSorting) population.fitnessProportionalSelection(evaluation).clone();
+
+//            System.out.println("selected individuals");
+//            System.out.println(firstIndividual);
+//            System.out.println(secondIndividual);
 
             Expression firstRoot = firstIndividual.getRootExpression();
             Expression secondRoot = secondIndividual.getRootExpression();
 
-            Expression firstSubtree;
-            Expression secondSubtree;
+            Expression firstSelectedSubtree;
+            Expression secondSelectedSubtree;
             do {
-                firstSubtree = (Expression) firstRoot.randomSubtree();
-                secondSubtree = (Expression) secondRoot.randomSubtree();
-            } while (firstRoot.depthOf(firstSubtree) + secondSubtree.height() > maxDepth ||
-                     secondRoot.depthOf(secondSubtree) + firstSubtree.height() > maxDepth);
+                firstSelectedSubtree = (Expression) firstRoot.randomSubtree();
+                secondSelectedSubtree = (Expression) secondRoot.randomSubtree();
+            } while (firstRoot.depthOf(firstSelectedSubtree) + secondSelectedSubtree.height() >
+                     maxDepth ||
+                     secondRoot.depthOf(secondSelectedSubtree) + firstSelectedSubtree.height() >
+                     maxDepth);
 
-            TreeNode firstFather = firstRoot.fatherOf(firstSubtree);
+//            System.out.println("selected subtrees");
+//            System.out.println(firstSelectedSubtree);
+//            System.out.println(secondSelectedSubtree);
+
+            TreeNode firstFather = firstRoot.fatherOf(firstSelectedSubtree);
             if (firstFather == null) {
-                firstIndividual.setRootExpression(secondSubtree);
+                firstIndividual.setRootExpression(secondSelectedSubtree);
             } else {
-                firstFather.replaceChild(firstSubtree, secondSubtree);
+                firstFather.replaceChild(firstSelectedSubtree, secondSelectedSubtree);
             }
 
-            TreeNode secondFather = secondRoot.fatherOf(firstSubtree);
+            TreeNode secondFather = secondRoot.fatherOf(secondSelectedSubtree);
             if (secondFather == null) {
-                secondIndividual.setRootExpression(firstSubtree);
+                secondIndividual.setRootExpression(firstSelectedSubtree);
             } else {
-                secondFather.replaceChild(secondSubtree, firstSubtree);
+                secondFather.replaceChild(secondSelectedSubtree, firstSelectedSubtree);
             }
 
         } catch (CloneNotSupportedException e) {

@@ -27,7 +27,7 @@ public class MyArrays {
         }
 
         // it never happens
-        return -1;
+        throw new RuntimeException("Wrong code");
     }
 
     public static <T> int indexWeightedRandomSelection (List<T> list, Balance<T> balance) {
@@ -48,6 +48,6 @@ public class MyArrays {
         }
 
         // it never happens
-        return -1;
+        throw new RuntimeException("Wrong code");
     }
 }

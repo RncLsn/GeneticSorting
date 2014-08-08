@@ -11,7 +11,7 @@ import java.util.*;
 /**
  * @author Alessandro Ronca
  */
-public class Population {
+public class Population implements Cloneable {
 
     private static final int MAX_DEPTH = 6;
     Collection<EvolvingSorting> individuals;
@@ -77,7 +77,12 @@ public class Population {
         while (nextGeneration.size() < this.size()) {
             Collection<EvolvingSorting> newIndividuals =
                     operatorsFactory.makeOperator().operate(this);
-            nextGeneration.individuals.addAll(newIndividuals);
+            for (EvolvingSorting newIndividual : newIndividuals) {
+                if (nextGeneration.size() >= this.size()) {
+                    break;
+                }
+                nextGeneration.individuals.add(newIndividual);
+            }
         }
         return nextGeneration;
     }
@@ -100,6 +105,25 @@ public class Population {
         }
 
         return populationList;
+    }
+
+    @Override
+    public Object clone () throws CloneNotSupportedException {
+        Population clonedPop = new Population();
+        for (EvolvingSorting sorting : individuals) {
+            clonedPop.individuals.add((EvolvingSorting) sorting.clone());
+        }
+        return clonedPop;
+    }
+
+    @Override
+    public String toString () {
+        StringBuilder sb = new StringBuilder();
+        for (EvolvingSorting individual : individuals) {
+            sb.append(individual).append("\n");
+        }
+        sb.deleteCharAt(sb.length() - 1);
+        return sb.toString();
     }
 
     private static class DoubleBalance implements Balance<Double> {
