@@ -14,7 +14,7 @@ import java.util.Collection;
 public class MutualCrossover implements Operator {
 
     private final Evaluation evaluation;
-    private final int        maxDepth;
+    private final int maxHeight;
 
     /**
      * @param evaluation is used for fitness proportional selection.
@@ -22,7 +22,7 @@ public class MutualCrossover implements Operator {
      */
     public MutualCrossover (Evaluation evaluation, int maxHeight) {
         this.evaluation = evaluation;
-        this.maxDepth = maxHeight;
+        this.maxHeight = maxHeight;
     }
 
     @Override
@@ -48,9 +48,9 @@ public class MutualCrossover implements Operator {
                 firstSelectedSubtree = (Expression) firstRoot.randomSubtree();
                 secondSelectedSubtree = (Expression) secondRoot.randomSubtree();
             } while (firstRoot.depthOf(firstSelectedSubtree) + secondSelectedSubtree.height() >
-                     maxDepth ||
+                     maxHeight ||
                      secondRoot.depthOf(secondSelectedSubtree) + firstSelectedSubtree.height() >
-                     maxDepth);
+                     maxHeight);
 
 //            System.out.println("selected subtrees");
 //            System.out.println(firstSelectedSubtree);
