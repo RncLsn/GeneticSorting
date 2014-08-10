@@ -1,7 +1,13 @@
 package genetic_sorting.structures;
 
 import genetic_sorting.evaluation.Evaluation;
-import genetic_sorting.operators.RandomOperatorsFactory;
+import genetic_sorting.operators.OperatorException;
+import genetic_sorting.operators.factories.RandomOperatorsFactory;
+import genetic_sorting.structures.factories.RandomFunctionFactory;
+import genetic_sorting.structures.factories.RandomTerminalFactory;
+import genetic_sorting.structures.individuals.EvolutionException;
+import genetic_sorting.structures.individuals.EvolvingSorting;
+import genetic_sorting.structures.individuals.EvolvingSortingBalance;
 import genetic_sorting.util.Balance;
 import genetic_sorting.util.MyArrays;
 import genetic_sorting.util.MyCollections;
@@ -72,19 +78,23 @@ public class Population implements Cloneable {
         return correctIndividuals;
     }
 
-    public Population evolve (RandomOperatorsFactory operatorsFactory) {
-        Population nextGeneration = new Population();
-        while (nextGeneration.size() < this.size()) {
-            Collection<EvolvingSorting> newIndividuals =
-                    operatorsFactory.makeOperator().operate(this);
-            for (EvolvingSorting newIndividual : newIndividuals) {
-                if (nextGeneration.size() >= this.size()) {
-                    break;
+    public Population evolve (RandomOperatorsFactory operatorsFactory) throws EvolutionException {
+        try {
+            Population nextGeneration = new Population();
+            while (nextGeneration.size() < this.size()) {
+                Collection<EvolvingSorting> newIndividuals =
+                        operatorsFactory.makeOperator().operate(this);
+                for (EvolvingSorting newIndividual : newIndividuals) {
+                    if (nextGeneration.size() >= this.size()) {
+                        break;
+                    }
+                    nextGeneration.individuals.add(newIndividual);
                 }
-                nextGeneration.individuals.add(newIndividual);
             }
+            return nextGeneration;
+        } catch (OperatorException e) {
+            throw new EvolutionException();
         }
-        return nextGeneration;
     }
 
     public int size () {

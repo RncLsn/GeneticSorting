@@ -1,12 +1,10 @@
 package genetic_sorting.interpreters;
 
-import genetic_sorting.structures.EvolvingSorting;
-import genetic_sorting.structures.InvalidExpressionException;
+import genetic_sorting.structures.individuals.EvolvingSorting;
+import genetic_sorting.structures.individuals.ExecutableSorting;
+import genetic_sorting.structures.individuals.InvalidExpressionException;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,27 +15,20 @@ import java.util.Scanner;
  */
 public class SortingTreeInterpreter {
 
-    public static void main (String[] args) throws InvalidExpressionException {
+    public static void main (String[] args) {
 
         if (args.length < 1) {
             System.out.println("usage: SortingTreeInterpreter <sortingTree-file>");
         }
 
-        try (BufferedReader reader = Files
-                .newBufferedReader(Paths.get(args[0]), Charset.defaultCharset())) {
-
+        try {
             // load program
-            String encodedTree = "";
-            String line;
-            while ((line = reader.readLine()) != null) {
-                encodedTree += line;
-                encodedTree += "\n";
-            }
-            EvolvingSorting sorting = EvolvingSorting.generateFromEncoding(encodedTree);
+            EvolvingSorting sorting = EvolvingSorting.generateFromEncoding(Paths.get(args[0]));
 
             // load input list
-            Scanner scanner = new Scanner(System.in);
             List<Integer> list = new ArrayList<>();
+
+            Scanner scanner = new Scanner(System.in);
             String listStr = scanner.nextLine();
             Scanner listScanner = new Scanner(listStr);
             while (listScanner.hasNext()) {
@@ -45,7 +36,7 @@ public class SortingTreeInterpreter {
             }
 
             // execute
-            sorting.trySorting(list);
+            new ExecutableSorting(sorting).execute(list);
 
             // output
             System.out.println(list);
@@ -53,7 +44,8 @@ public class SortingTreeInterpreter {
         } catch (IOException e) {
             System.out.println("file " + args[0] + "cannot be opened");
             System.exit(1);
+        } catch (InvalidExpressionException e) {
+            System.out.println("file " + args[0] + "doesn't contain a valid program");
         }
-
     }
 }

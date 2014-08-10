@@ -1,5 +1,6 @@
 package genetic_sorting.operators;
 
+import genetic_sorting.util.Balance;
 import genetic_sorting.util.MyCollections;
 
 import java.util.Iterator;
@@ -13,19 +14,18 @@ public abstract class TreeNode<T> implements Iterable<TreeNode<T>> {
 
     public abstract T getElement ();
 
-    public TreeNode<T> randomSubtree () {
-//        double p = 1.0 / size();
-//
-//        Random rand = new Random();
-//        while (true) {
-//            for (TreeNode<T> treeNode : this) {
-//                if (rand.nextDouble() < p) {
-//                    return treeNode;
-//                }
-//            }
-//        }
+    public boolean isLeaf () {
+        return getChildren() == null || getChildren().size() == 0;
+    }
 
+    public abstract List<? extends TreeNode<T>> getChildren ();
+
+    public TreeNode<T> randomSubtree () {
         return MyCollections.randomSelection(this);
+    }
+
+    public TreeNode<T> randomSubtree (double leafProbability) {
+        return MyCollections.weightedRandomSelection(this, new TreeNodeBalance<T>(leafProbability));
     }
 
     public int height () {
@@ -85,8 +85,6 @@ public abstract class TreeNode<T> implements Iterable<TreeNode<T>> {
         return null;
     }
 
-    public abstract List<? extends TreeNode<T>> getChildren ();
-
     public abstract boolean replaceChild (T oldChild, T newChild);
 
     @Override
@@ -94,13 +92,31 @@ public abstract class TreeNode<T> implements Iterable<TreeNode<T>> {
         return new TreeIterator<>(this);
     }
 
-    private class TreeIterator<T> implements Iterator<TreeNode<T>> {
+    private static class TreeNodeBalance<V> implements Balance<TreeNode<V>> {
 
-        private final Stack<TreeNode<T>> stack;
+        private final double leafProbability;
 
-        private TreeNode<T> next;
+        public TreeNodeBalance (double leafProbability) {
+            this.leafProbability = leafProbability;
+        }
 
-        public TreeIterator (TreeNode<T> root) {
+        @Override
+        public double weigh (TreeNode<V> tTreeNode) {
+            if (tTreeNode.isLeaf()) {
+                return leafProbability;
+            } else {
+                return 1 - leafProbability;
+            }
+        }
+    }
+
+    private class TreeIterator<E> implements Iterator<TreeNode<E>> {
+
+        private final Stack<TreeNode<E>> stack;
+
+        private TreeNode<E> next;
+
+        public TreeIterator (TreeNode<E> root) {
             stack = new Stack<>();
             stack.push(root);
         }
@@ -115,16 +131,16 @@ public abstract class TreeNode<T> implements Iterable<TreeNode<T>> {
             }
 
             next = stack.pop();
-            for (TreeNode<T> children : next.getChildren()) {
+            for (TreeNode<E> children : next.getChildren()) {
                 stack.push(children);
             }
             return true;
         }
 
         @Override
-        public TreeNode<T> next () {
+        public TreeNode<E> next () {
             if (hasNext()) {
-                TreeNode<T> tmpNext = next;
+                TreeNode<E> tmpNext = next;
                 next = null;
                 return tmpNext;
             }

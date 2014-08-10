@@ -1,8 +1,8 @@
 package genetic_sorting.operators;
 
 import genetic_sorting.evaluation.Evaluation;
-import genetic_sorting.structures.EvolvingSorting;
 import genetic_sorting.structures.Population;
+import genetic_sorting.structures.individuals.EvolvingSorting;
 
 import java.util.Arrays;
 import java.util.Collection;

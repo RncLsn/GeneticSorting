@@ -1,6 +1,8 @@
 package genetic_sorting.evaluation;
 
-import genetic_sorting.structures.EvolvingSorting;
+import genetic_sorting.evaluation.disorder_measures.DisorderMeasure;
+import genetic_sorting.structures.individuals.EvolvingSorting;
+import genetic_sorting.structures.individuals.ExecutableSorting;
 
 import java.util.*;
 
@@ -17,7 +19,7 @@ public class Evaluation {
     private final DisorderMeasure                    disorderMeasure;
     private final Hashtable<EvolvingSorting, Double> memo;
 
-    Set<List<Integer>> testCases;
+    private Set<List<Integer>> testCases;
 
     public Evaluation (DisorderMeasure disorderMeasure, int numOfTestCases) {
         this(disorderMeasure, numOfTestCases, MAX_LENGTH, MAX_VALUE);
@@ -50,6 +52,14 @@ public class Evaluation {
         return list;
     }
 
+    public Set<List<Integer>> getTestCases () {
+        HashSet<List<Integer>> testCasesCpy = new HashSet<>();
+        for (List<Integer> list : testCases) {
+            testCasesCpy.add(new ArrayList<Integer>(list));
+        }
+        return testCasesCpy;
+    }
+
     /**
      * makes use of memoization.
      *
@@ -78,6 +88,22 @@ public class Evaluation {
         for (List<Integer> testCase : testCases) {
             ArrayList<Integer> testCaseCopy = new ArrayList<>(testCase);
             sorting.trySorting(testCaseCopy);
+            double disorder = disorderMeasure.getValue(testCaseCopy);
+            if (disorder > 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean isCorrect (ExecutableSorting sorting) {
+        if (memo.containsKey(sorting)) {
+            return memo.get(sorting) == 1;
+        }
+
+        for (List<Integer> testCase : testCases) {
+            ArrayList<Integer> testCaseCopy = new ArrayList<>(testCase);
+            sorting.execute(testCaseCopy);
             double disorder = disorderMeasure.getValue(testCaseCopy);
             if (disorder > 0) {
                 return false;

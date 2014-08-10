@@ -1,6 +1,5 @@
 package genetic_sorting.util;
 
-import java.util.Collection;
 import java.util.Random;
 
 /**
@@ -31,10 +30,10 @@ public class MyCollections {
         throw new RuntimeException("Wrong code");
     }
 
-    public static <T extends Weighty> T weightedRandomSelection (Collection<T> collection) {
+    public static <T extends Weighty> T weightedRandomSelection (Iterable<T> iterable) {
 
         double totalWeight = 0;
-        for (T t : collection) {
+        for (T t : iterable) {
             totalWeight += t.getWeight();
         }
 
@@ -42,7 +41,7 @@ public class MyCollections {
         double p = rand.nextDouble() * totalWeight;
 
         double current = 0;
-        for (T t : collection) {
+        for (T t : iterable) {
             current += t.getWeight();
             if (p <= current) {
                 return t;
@@ -53,9 +52,30 @@ public class MyCollections {
         throw new RuntimeException("Wrong code");
     }
 
-    public static <T> T weightedRandomSelection (Collection<T> collection, Balance<T> balance) {
+//    public static <T> T weightedRandomSelection (Collection<T> collection, Balance<T> balance) {
+//        double totalWeight = 0;
+//        for (T t : collection) {
+//            totalWeight += balance.weigh(t);
+//        }
+//
+//        Random rand = new Random();
+//        double p = rand.nextDouble() * totalWeight;
+//
+//        double current = 0;
+//        for (T t : collection) {
+//            current += balance.weigh(t);
+//            if (p <= current) {
+//                return t;
+//            }
+//        }
+//
+//        // it never happens
+//        throw new RuntimeException("Wrong code");
+//    }
+
+    public static <T> T weightedRandomSelection (Iterable<T> iterable, Balance<T> balance) {
         double totalWeight = 0;
-        for (T t : collection) {
+        for (T t : iterable) {
             totalWeight += balance.weigh(t);
         }
 
@@ -63,7 +83,7 @@ public class MyCollections {
         double p = rand.nextDouble() * totalWeight;
 
         double current = 0;
-        for (T t : collection) {
+        for (T t : iterable) {
             current += balance.weigh(t);
             if (p <= current) {
                 return t;
@@ -73,4 +93,5 @@ public class MyCollections {
         // it never happens
         throw new RuntimeException("Wrong code");
     }
+
 }

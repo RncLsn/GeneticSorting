@@ -1,9 +1,9 @@
 package genetic_sorting.operators;
 
 import genetic_sorting.evaluation.Evaluation;
-import genetic_sorting.structures.EvolvingSorting;
-import genetic_sorting.structures.Expression;
 import genetic_sorting.structures.Population;
+import genetic_sorting.structures.expressions.Expression;
+import genetic_sorting.structures.individuals.EvolvingSorting;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -13,48 +13,72 @@ import java.util.Collection;
  */
 public class MutualCrossover implements Operator {
 
+    private static final int DEFAULT_MAX_TRIES                 = 100;
+    private static final int DEFAULT_MAX_INDIVIDUAL_SELECTIONS = 5;
     private final Evaluation evaluation;
-    private final int maxHeight;
+    private final int        maxHeight;
+    private final int        maxTries;
+    private final int        maxIndividualSelections;
+
 
     /**
      * @param evaluation is used for fitness proportional selection.
      * @param maxHeight
      */
     public MutualCrossover (Evaluation evaluation, int maxHeight) {
+        this(evaluation, maxHeight, DEFAULT_MAX_TRIES, DEFAULT_MAX_INDIVIDUAL_SELECTIONS);
+    }
+
+    /**
+     * @param maxHeight
+     * @param maxTries
+     * @param maxIndividualSelections
+     */
+    public MutualCrossover (Evaluation evaluation, int maxHeight, int maxTries,
+                            int maxIndividualSelections) {
         this.evaluation = evaluation;
         this.maxHeight = maxHeight;
+        this.maxTries = maxTries;
+        this.maxIndividualSelections = maxIndividualSelections;
     }
 
     @Override
-    public Collection<EvolvingSorting> operate (Population population) {
+    public Collection<EvolvingSorting> operate (Population population) throws CrossoverException {
         EvolvingSorting firstIndividual = null;
         EvolvingSorting secondIndividual = null;
         try {
-            firstIndividual
-                    = (EvolvingSorting) population.fitnessProportionalSelection(evaluation).clone();
-            secondIndividual =
-                    (EvolvingSorting) population.fitnessProportionalSelection(evaluation).clone();
-
-//            System.out.println("selected individuals");
-//            System.out.println(firstIndividual);
-//            System.out.println(secondIndividual);
-
-            Expression firstRoot = firstIndividual.getRootExpression();
-            Expression secondRoot = secondIndividual.getRootExpression();
-
+            Expression firstRoot;
+            Expression secondRoot;
             Expression firstSelectedSubtree;
             Expression secondSelectedSubtree;
+            int tries;
+            int individualSelections = 0;
             do {
-                firstSelectedSubtree = (Expression) firstRoot.randomSubtree();
-                secondSelectedSubtree = (Expression) secondRoot.randomSubtree();
-            } while (firstRoot.depthOf(firstSelectedSubtree) + secondSelectedSubtree.height() >
-                     maxHeight ||
-                     secondRoot.depthOf(secondSelectedSubtree) + firstSelectedSubtree.height() >
-                     maxHeight);
+                if (individualSelections > DEFAULT_MAX_INDIVIDUAL_SELECTIONS) {
+                    throw new CrossoverException("Too much selections without success");
+                }
+                individualSelections++;
 
-//            System.out.println("selected subtrees");
-//            System.out.println(firstSelectedSubtree);
-//            System.out.println(secondSelectedSubtree);
+                firstIndividual
+                        = (EvolvingSorting) population.fitnessProportionalSelection(evaluation)
+                                                      .clone();
+                secondIndividual =
+                        (EvolvingSorting) population.fitnessProportionalSelection(evaluation)
+                                                    .clone();
+
+                firstRoot = firstIndividual.getRootExpression();
+                secondRoot = secondIndividual.getRootExpression();
+
+                tries = 0;
+                do {
+                    firstSelectedSubtree = (Expression) firstRoot.randomSubtree();
+                    secondSelectedSubtree = (Expression) secondRoot.randomSubtree();
+                } while (tries++ < DEFAULT_MAX_TRIES &&
+                         firstRoot.depthOf(firstSelectedSubtree) + secondSelectedSubtree.height() >
+                         maxHeight ||
+                         secondRoot.depthOf(secondSelectedSubtree) + firstSelectedSubtree.height() >
+                         maxHeight);
+            } while (tries > DEFAULT_MAX_TRIES);
 
             TreeNode firstFather = firstRoot.fatherOf(firstSelectedSubtree);
             if (firstFather == null) {
