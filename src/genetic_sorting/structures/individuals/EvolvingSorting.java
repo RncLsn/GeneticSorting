@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  */
 public class EvolvingSorting implements Cloneable {
 
-    public static final  int     INITIAL_INDEX      = 0;
+    private static final int     INITIAL_INDEX      = 0;
     private static final int     MAX_DEPTH          = 6;
     private static final Pattern EXPRESSION_START_P = Pattern.compile("\\s*\\(\\s*(?<id>\\w+)");
     private static final Pattern EXPRESSION_END_P   = Pattern.compile("\\s*\\)");
@@ -77,7 +77,7 @@ public class EvolvingSorting implements Cloneable {
         return function;
     }
 
-    public static Expression parseExpression (String encodedTree)
+    private static Expression parseExpression (String encodedTree)
             throws InvalidExpressionException {
         return auxParse(encodedTree, 0, new Index()).expression;
     }

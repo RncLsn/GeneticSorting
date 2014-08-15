@@ -24,8 +24,7 @@ public class MeanInversionDistance implements DisorderMeasure {
             return 0;
         } else {
             double mean = (double) totalInversionDistance / invertedPairs;
-            double normalized = 1.0 / Math.pow(2, mean);
-            return normalized;
+            return 1.0 / Math.pow(2, mean);
         }
     }
 }

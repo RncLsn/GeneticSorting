@@ -11,7 +11,7 @@ import genetic_sorting.structures.individuals.EvolutionException;
 /**
  * @author Alessandro Ronca
  */
-public class DebugTest {
+class DebugTest {
 
     public static void main (String[] args) throws EvolutionException {
 //        testMutation();

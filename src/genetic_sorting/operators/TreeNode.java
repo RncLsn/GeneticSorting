@@ -53,7 +53,7 @@ public abstract class TreeNode<T> implements Iterable<TreeNode<T>> {
         }
     }
 
-    public int auxDepthOf (TreeNode<T> treeNode, int depth) {
+    private int auxDepthOf (TreeNode<T> treeNode, int depth) {
         if (equals(treeNode)) {
             return depth;
         }

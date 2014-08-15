@@ -12,7 +12,7 @@ public class Constant extends Terminal {
 
     // todo
 
-    private int value;
+    private final int value;
 
     public Constant (int value) {
         this.value = value;

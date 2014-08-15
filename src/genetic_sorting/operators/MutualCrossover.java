@@ -54,7 +54,7 @@ public class MutualCrossover implements Operator {
             int tries;
             int individualSelections = 0;
             do {
-                if (individualSelections > DEFAULT_MAX_INDIVIDUAL_SELECTIONS) {
+                if (individualSelections > maxIndividualSelections) {
                     throw new CrossoverException("Too much selections without success");
                 }
                 individualSelections++;
@@ -73,12 +73,12 @@ public class MutualCrossover implements Operator {
                 do {
                     firstSelectedSubtree = (Expression) firstRoot.randomSubtree();
                     secondSelectedSubtree = (Expression) secondRoot.randomSubtree();
-                } while (tries++ < DEFAULT_MAX_TRIES &&
+                } while (tries++ < maxTries &&
                          firstRoot.depthOf(firstSelectedSubtree) + secondSelectedSubtree.height() >
                          maxHeight ||
                          secondRoot.depthOf(secondSelectedSubtree) + firstSelectedSubtree.height() >
                          maxHeight);
-            } while (tries > DEFAULT_MAX_TRIES);
+            } while (tries > maxTries);
 
             TreeNode firstFather = firstRoot.fatherOf(firstSelectedSubtree);
             if (firstFather == null) {

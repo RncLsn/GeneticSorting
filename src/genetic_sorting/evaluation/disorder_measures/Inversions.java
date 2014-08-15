@@ -20,7 +20,6 @@ public class Inversions implements DisorderMeasure {
         }
 
         int maxInversions = (list.size()) * (list.size() - 1) / 2;
-        double normalized = (double) nInversions / maxInversions;
-        return normalized;
+        return (double) nInversions / maxInversions;
     }
 }

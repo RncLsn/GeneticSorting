@@ -35,7 +35,7 @@ public class Evaluation {
         this.numOfTestCases = numOfTestCases;
         this.maxLength = maxLength;
         this.maxValue = maxValue;
-        this.memo = new Hashtable<EvolvingSorting, Double>();
+        this.memo = new Hashtable<>();
         testCases = new HashSet<>();
         for (int i = 0; i < numOfTestCases; i++) {
             testCases.add(randomList(maxLength, maxValue));
@@ -55,7 +55,7 @@ public class Evaluation {
     public Set<List<Integer>> getTestCases () {
         HashSet<List<Integer>> testCasesCpy = new HashSet<>();
         for (List<Integer> list : testCases) {
-            testCasesCpy.add(new ArrayList<Integer>(list));
+            testCasesCpy.add(new ArrayList<>(list));
         }
         return testCasesCpy;
     }
@@ -97,10 +97,6 @@ public class Evaluation {
     }
 
     public boolean isCorrect (ExecutableSorting sorting) {
-        if (memo.containsKey(sorting)) {
-            return memo.get(sorting) == 1;
-        }
-
         for (List<Integer> testCase : testCases) {
             ArrayList<Integer> testCaseCopy = new ArrayList<>(testCase);
             sorting.execute(testCaseCopy);

@@ -17,7 +17,7 @@ import java.util.Random;
 /**
  * @author Alessandro Ronca
  */
-public class DebugTest {
+class DebugTest {
 
     public static void main (String[] args) {
 //        test1();
@@ -25,7 +25,7 @@ public class DebugTest {
 
     }
 
-    public static void test2 () {
+    private static void test2 () {
         HashSet<EvolvingSorting> population = new HashSet<>();
         RandomFunctionFactory functionFactory = new RandomFunctionFactory();
         RandomTerminalFactory terminalFactory = new RandomTerminalFactory();

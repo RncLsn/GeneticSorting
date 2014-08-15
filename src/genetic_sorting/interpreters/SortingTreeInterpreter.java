@@ -13,7 +13,7 @@ import java.util.Scanner;
 /**
  * @author Alessandro Ronca
  */
-public class SortingTreeInterpreter {
+class SortingTreeInterpreter {
 
     public static void main (String[] args) {
 

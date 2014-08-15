@@ -5,7 +5,7 @@ import java.util.Properties;
 /**
  * @author Alessandro Ronca
  */
-public class BatchProperties extends Properties {
+class BatchProperties extends Properties {
 
     public BatchProperties () {
         setIntProperty("initialPopulation", 1000);
@@ -17,13 +17,19 @@ public class BatchProperties extends Properties {
         setDoubleProperty("crossoverPct", 0.9);
         setDoubleProperty("crossoverExpansion", 1.8);
         setIntProperty("generations", 50);
+
+        setIntProperty("runs", 20);
+
+        setIntProperty("generalTestCases", 1000);
+        setIntProperty("generalMaxListLength", 100);
+        setIntProperty("generalMaxListValue", 200);
     }
 
-    public Object setIntProperty (String key, int value) {
+    Object setIntProperty (String key, int value) {
         return setProperty(key, Integer.toString(value));
     }
 
-    public Object setDoubleProperty (String key, double value) {
+    Object setDoubleProperty (String key, double value) {
         return setProperty(key, Double.toString(value));
     }
 

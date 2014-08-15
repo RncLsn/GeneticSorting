@@ -20,7 +20,7 @@ import java.util.*;
 public class Population implements Cloneable {
 
     private static final int MAX_DEPTH = 6;
-    Collection<EvolvingSorting> individuals;
+    private final Collection<EvolvingSorting> individuals;
 
     private Population () {
         individuals = new ArrayList<>();

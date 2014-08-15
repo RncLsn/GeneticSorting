@@ -45,10 +45,12 @@ public class Iterate extends Function {
         int start = x.evaluate(list, index);
         int end = y.evaluate(list, index);
 
-        for (int i = 0;
+        // todo test start
+        for (int i = start;
              i < end && i < list.size() &&
              (executable ||
-              (i < MAX_ITERATIONS_PER_CALL && iterationsPerTest < MAX_ITERATIONS_PER_TEST));
+              ((i - start) < MAX_ITERATIONS_PER_CALL &&
+               iterationsPerTest < MAX_ITERATIONS_PER_TEST));
              i++, iterationsPerTest++) {
             z.evaluate(list, i);
         }

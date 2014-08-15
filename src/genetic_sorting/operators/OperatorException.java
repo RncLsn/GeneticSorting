@@ -5,7 +5,7 @@ package genetic_sorting.operators;
  */
 public class OperatorException extends Exception {
 
-    public OperatorException (String s) {
+    OperatorException (String s) {
         super(s);
     }
 }

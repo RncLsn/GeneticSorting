@@ -8,14 +8,14 @@ import java.util.List;
 /**
  * @author Alessandro Ronca
  */
-public class DebugTest {
+class DebugTest {
 
 
     public static void main (String[] args) {
         testMeanInversionDistance();
     }
 
-    public static void testMeanInversionDistance () {
+    private static void testMeanInversionDistance () {
         MeanInversionDistance meanInversionDistance = new MeanInversionDistance();
         List<Integer> list = Arrays.asList(9, 6, 10, 7, 8);
         double mid = meanInversionDistance.getValue(list);
