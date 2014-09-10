@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * It is a terminal and evaluates directly to the length of the list.
+ *
  * @author Alessandro Ronca
  */
 public class Length extends Terminal {

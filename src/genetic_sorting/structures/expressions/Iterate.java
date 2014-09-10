@@ -7,6 +7,15 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * It represents the expression "(iterate e1 e2 e3)". <p></p> It evaluates the sub-expression e3
+ * multiple times, for <tt>i in [e1.evaluate(), e2.evaluate())</tt> passing <tt>i</tt> as
+ * <tt>index</tt>. <p></p> It returns the final smallest among the final value of the index and the
+ * list length. <p></p> In the desirable case its behaviour is that one of looping on a list with
+ * the possible side effects. <p></p> At each evaluation it can perform at most 200 iterations, in
+ * each test it can execute at most 2000 iterations (multiple evaluations are possible because of
+ * inner loops). These constraints are posed to avoid infinite loops. However at execution time they
+ * must be removed in order to obtain a general algorithm.
+ *
  * @author Alessandro Ronca
  */
 public class Iterate extends Function {

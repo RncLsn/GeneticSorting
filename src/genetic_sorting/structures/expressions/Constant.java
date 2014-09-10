@@ -6,6 +6,9 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * It represents the expression "(c)". This expression is a terminal and evaluates directly to its
+ * integer value, decided at the moment of construction.
+ *
  * @author Alessandro Ronca
  */
 public class Constant extends Terminal {

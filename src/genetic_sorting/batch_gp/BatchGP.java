@@ -24,12 +24,7 @@ import java.util.*;
  */
 public class BatchGP implements Runnable {
 
-    private static final Path RESULT_PATH =
-            Paths.get("Results/BatchGP_" + new Date().toString().replace(" ", "_"));
-
     private static final Path PROPERTIES_PATH = Paths.get("Config/batchGP.properties");
-
-    private static final int GT_PERIOD = 20;
 
     private final BatchProperties    properties;
     private final List<OutputStream> outStreams;
@@ -38,6 +33,7 @@ public class BatchGP implements Runnable {
     private int     generationsOfSuccessfulRuns = 0;
     private int     numberOfGeneralSortings     = 0;
     private boolean executed                    = false;
+    private int generalSuccessfulRuns = 0;
 
 
     public BatchGP (BatchProperties properties, List<OutputStream> outStreams) {
@@ -55,10 +51,16 @@ public class BatchGP implements Runnable {
      */
     public static void main (String[] args) {
 
+        if (args.length < 1) {
+            System.out.println("usage: BatchGP <out-file-name>");
+            System.exit(0);
+        }
+
+        Path resultPath = Paths.get(args[0]);
         // create result path
-        if (Files.notExists(RESULT_PATH.getParent())) {
+        if (Files.notExists(resultPath.getParent())) {
             try {
-                Files.createDirectory(RESULT_PATH.getParent());
+                Files.createDirectory(resultPath.getParent());
             } catch (IOException e) {
                 e.printStackTrace();
                 System.exit(1);
@@ -73,16 +75,46 @@ public class BatchGP implements Runnable {
             System.err.println("Configuration file is not present at path: " + PROPERTIES_PATH);
         }
 
-        try (OutputStream outStream = Files.newOutputStream(RESULT_PATH)) {
-            BatchGP batchGPRunnable = new BatchGP(properties, Arrays.asList(System.out, outStream));
+        try (OutputStream outStream = Files.newOutputStream(resultPath)) {
+            BatchGP batchGPRunnable = new BatchGP(properties, Arrays.asList(outStream));
             Thread t = new Thread(batchGPRunnable);
             t.start();
             t.join();
+            System.out.printf("avgCorrect=%f, avgGeneral=%f, ratio=%f",
+                              batchGPRunnable.getAvgCorrectSortings(),
+                              batchGPRunnable.getAvgGeneralSortings(),
+                              batchGPRunnable.getGeneralityRatio());
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public double getAvgCorrectSortings () {
+        if (!executed) {
+            throw new IllegalStateException("Runnable not executed yet");
+        }
+
+        int runs = properties.getIntProperty("runs");
+        return (double) correctSortings / runs;
+    }
+
+    public double getAvgGeneralSortings () {
+        if (!executed) {
+            throw new IllegalStateException("Runnable not executed yet");
+        }
+
+        int runs = properties.getIntProperty("runs");
+        return (double) numberOfGeneralSortings / runs;
+    }
+
+    public double getGeneralityRatio () {
+        if (!executed) {
+            throw new IllegalStateException("Runnable not executed yet");
+        }
+
+        return (double) numberOfGeneralSortings / correctSortings;
     }
 
     public BatchProperties getProperties () {
@@ -121,7 +153,6 @@ public class BatchGP implements Runnable {
 
         printAllStreams(outs, "Executing " + properties.getIntProperty("runs") + " runs...");
 
-        Set<EvolvingSorting> solutions = new HashSet<>();
         Set<EvolvingSorting> generalSortings = new HashSet<>();
         for (int i = 0; i < properties.getIntProperty("runs"); i++) {
 
@@ -141,31 +172,23 @@ public class BatchGP implements Runnable {
             if (!someSolutions.isEmpty()) {
                 successfulRuns++;
                 correctSortings += someSolutions.size();
-                generationsOfSuccessfulRuns = batchGPResult.getGenerations();
-                solutions.addAll(someSolutions);
-            }
-            if (i % GT_PERIOD == 0) {
-                // periodic generality tests
-                generalSortings.addAll(
+                generationsOfSuccessfulRuns += batchGPResult.getGenerations();
+                Set<EvolvingSorting> currentGeneralSortings =
                         GeneralityTest.generalityTest(
-                                solutions,
+                                someSolutions,
                                 properties.getIntProperty("generalTestCases"),
                                 properties.getIntProperty("generalMaxListLength"),
-                                properties.getIntProperty("generalMaxListValue")));
-                solutions.clear();
+                                properties.getIntProperty("generalMaxListValue"));
+                if (!currentGeneralSortings.isEmpty()) {
+                    this.generalSuccessfulRuns++;
+                }
+                generalSortings.addAll(currentGeneralSortings);
             }
+
         }
 
         printAllStreams(outs, "GLOBAL RESULTS\nNumber of successful runs: " + successfulRuns +
-                              "\nNumber of total correct solutions: " + solutions.size());
-
-        // generality tests
-        generalSortings.addAll(
-                GeneralityTest.generalityTest(
-                        solutions,
-                        properties.getIntProperty("generalTestCases"),
-                        properties.getIntProperty("generalMaxListLength"),
-                        properties.getIntProperty("generalMaxListValue")));
+                              "\nNumber of total correct solutions: " + correctSortings);
 
         numberOfGeneralSortings = generalSortings.size();
 
@@ -315,29 +338,27 @@ public class BatchGP implements Runnable {
         return (double) generationsOfSuccessfulRuns / successfulRuns;
     }
 
-    public double getAvgCorrectSortings () {
+    public double getSuccessPct () {
         if (!executed) {
             throw new IllegalStateException("Runnable not executed yet");
         }
 
-        int runs = properties.getIntProperty("runs");
-        return (double) correctSortings / runs;
+        return (double) successfulRuns / properties.getIntProperty("runs");
     }
 
-    public double getAvgGeneralSortings () {
+    public double getGeneralSuccessPct () {
         if (!executed) {
             throw new IllegalStateException("Runnable not executed yet");
         }
 
-        int runs = properties.getIntProperty("runs");
-        return (double) numberOfGeneralSortings / runs;
+        return (double) generalSuccessfulRuns / properties.getIntProperty("runs");
     }
 
-    public double getGeneralityRatio () {
+    public double getRunsRatio () {
         if (!executed) {
             throw new IllegalStateException("Runnable not executed yet");
         }
 
-        return (double) numberOfGeneralSortings / correctSortings;
+        return (double) generalSuccessfulRuns / successfulRuns;
     }
 }

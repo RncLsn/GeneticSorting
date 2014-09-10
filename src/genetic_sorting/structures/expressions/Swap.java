@@ -6,6 +6,10 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * It returns the evaluation of its first argument. <p></p> It takes the evaluations of its
+ * sub-expressions as index values, and swap the corresponding elements in the list, through
+ * side-effect.
+ *
  * @author Alessandro Ronca
  */
 public class Swap extends Function {

@@ -6,6 +6,9 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * It represents the expression "(decrement e)". <p></p> It evaluates to the value of its argument
+ * minus 1.
+ *
  * @author Alessandro Ronca
  */
 public class Decrement extends Function {

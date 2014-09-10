@@ -23,7 +23,14 @@ public class SimpleLogger {
     public SimpleLogger (List<? extends OutputStream> streams, Class srcClass) {
         this.streams = streams;
         this.srcClass = srcClass;
-        this.srcClassString = (srcClass != null) ? srcClass.toString() : "";
+
+        if (srcClass == null) {
+            srcClassString = "";
+        } else {
+            String[] classTokens = srcClass.toString().split("\\.");
+            this.srcClassString = classTokens[classTokens.length - 1];
+        }
+
         this.writers = new ArrayList<>();
         for (OutputStream outStream : streams) {
             writers.add(new PrintStream(outStream));

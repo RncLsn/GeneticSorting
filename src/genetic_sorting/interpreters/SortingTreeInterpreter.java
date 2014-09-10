@@ -19,6 +19,7 @@ class SortingTreeInterpreter {
 
         if (args.length < 1) {
             System.out.println("usage: SortingTreeInterpreter <sortingTree-file>");
+            System.exit(0);
         }
 
         try {

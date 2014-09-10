@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * It represents the expression "(increment e)". It evaluates to the value of its argument plus 1.
+ *
  * @author Alessandro Ronca
  */
 public class Increment extends Function {

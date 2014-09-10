@@ -6,6 +6,11 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * It represents the expression "(getsmaller e1 e2)". <p></p> It returns the smallest of its
+ * parameters, or better the smallest value among the evaluations of its sub-expressions. In the
+ * case where one of the two values is out of the range of the possible indices for the list, it
+ * returns 0.
+ *
  * @author Alessandro Ronca
  */
 public class GetSmaller extends Function {

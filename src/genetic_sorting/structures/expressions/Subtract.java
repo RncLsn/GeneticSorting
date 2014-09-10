@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * It returns the difference of the evaluations of its sub-expressions.
+ *
  * @author Alessandro Ronca
  */
 public class Subtract extends Function {
