@@ -3,6 +3,13 @@ GeneticSorting
 
 A genetic programming (GP) framework for developing sorting algorithms.
 
+It is able to generate simple iterative sorting algorithms, that can later executed through the
+provided interpreter.
+
+You can find an example in "testprogram.gp", that is a Bubble Sort, written in the language used
+by this framework for writing sorting programs.
+
+
 Execution instructions
 ----------------------
 
