@@ -58,14 +58,14 @@ public class BatchGP implements Runnable {
 
         Path resultPath = Paths.get(args[0]);
         // create result path
-        if (Files.notExists(resultPath.getParent())) {
-            try {
-                Files.createDirectory(resultPath.getParent());
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.exit(1);
-            }
-        }
+//        if (Files.notExists(resultPath.getParent())) {
+//            try {
+//                Files.createDirectory(resultPath.getParent());
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                System.exit(1);
+//            }
+//        }
 
         // load properties
         BatchProperties properties = new BatchProperties();

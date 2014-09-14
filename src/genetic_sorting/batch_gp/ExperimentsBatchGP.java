@@ -33,11 +33,11 @@ public class ExperimentsBatchGP {
 
     public static void main (String[] args) {
 
-        List<Double> mutationPctValues = Arrays.asList(0.1, 0.2, 0.3);
-        List<Double> crossoverPctValues = Arrays.asList(0.7, 0.8, 0.9);
+        List<Double> mutationPctValues = Arrays.asList(0.4);
+        List<Double> crossoverPctValues = Arrays.asList(0.8, 0.9);
         List<Integer> generationsValues = Arrays.asList(50);
-        List<Integer> testCasesValues = Arrays.asList(5);
-        List<Integer> maxListLengthValues = Arrays.asList(7);
+        List<Integer> testCasesValues = Arrays.asList(5, 50);
+        List<Integer> maxListLengthValues = Arrays.asList(7, 47);
 
         int numOfTests = mutationPctValues.size() * crossoverPctValues.size() *
                          generationsValues.size() * testCasesValues.size() *
@@ -72,12 +72,16 @@ public class ExperimentsBatchGP {
         logger.log("Parameters: generationValues: " + generationsValues);
         logger.log("Parameters: testCasesValues: " + testCasesValues);
         logger.log("Parameters: maxListLengthValues: " + maxListLengthValues);
+        logger.log("Parameters: tries: " + TRIES);
 
-        logger.log("Trying all combinations gives a total number of tests:" + numOfTests);
+        logger.log("Trying all combinations gives a total number of tests:" +
+                   numOfTests + " * " + TRIES);
         logger.log("Tests running in parallel:" + PARALLELISM_DEGREE);
 
         Map<BatchGP, Thread> runningBatchesMap =
                 Collections.synchronizedMap(new HashMap<BatchGP, Thread>());
+
+        Set<Thread> threadHandlerThreads = new HashSet<>();
 
         int batchNumber = 0;
         for (double mutationPct : mutationPctValues) {
@@ -121,8 +125,11 @@ public class ExperimentsBatchGP {
                                 Thread batchGPThread = new Thread(batchGPRunnable);
                                 batchGPThread.start();
                                 runningBatchesMap.put(batchGPRunnable, batchGPThread);
-                                new Thread(new ThreadHandler(batchGPRunnable, runningBatchesMap,
-                                                             logger)).start();
+                                Thread threadHandlerThread = new Thread(
+                                        new ThreadHandler(batchGPRunnable, runningBatchesMap,
+                                                          logger));
+                                threadHandlerThreads.add(threadHandlerThread);
+                                threadHandlerThread.start();
                                 batchNumber++;
                             }
                         }
@@ -130,6 +137,15 @@ public class ExperimentsBatchGP {
                 }
             }
         }
+
+        for (Thread t : threadHandlerThreads) {
+            try {
+                t.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
         try {
             logOutStream.close();
         } catch (IOException e) {
